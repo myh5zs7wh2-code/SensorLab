@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0c0f" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-sensorlab-02'; style-src 'nonce-sensorlab-02'; img-src 'self' data:; media-src 'self' blob:; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'none'" />
+  <title>SensorLab 0.2</title>
+  <style nonce="sensorlab-02">
+    :root{
+      color-scheme:dark;
+      --bg:#0b0c0f;--panel:#13151a;--panel2:#181b21;--line:#272b33;
+      --text:#f4f6f8;--muted:#9ca3af;--ok:#6ee7a8;--warn:#f7ca65;--bad:#ff7b7b;--accent:#8fb7ff;
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,Segoe UI,sans-serif}
+    body{min-height:100vh;background:radial-gradient(circle at 15% 0%,#151a25 0,transparent 34%),var(--bg)}
+    button{font:inherit}
+    .wrap{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:28px 0 64px}
+    header{display:flex;gap:20px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:clamp(2rem,7vw,4.8rem);line-height:.95;letter-spacing:-.06em;margin:0}
+    .eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:10px}
+    .intro{max-width:720px;color:var(--muted);margin:14px 0 0}
+    .privacy{padding:12px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.86rem;white-space:nowrap}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 18px}
+    button{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:13px;padding:11px 14px;cursor:pointer;transition:.16s ease}
+    button:hover{transform:translateY(-1px);border-color:#3a404b}
+    button.primary{background:#eef4ff;color:#101319;border-color:#eef4ff;font-weight:700}
+    button.danger{background:transparent;color:#ffb0b0}
+    button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .security{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin:0 0 28px}
+    .security-box{background:rgba(143,183,255,.055);border:1px solid #2c3545;border-radius:16px;padding:14px}
+    .security-title{font-size:.82rem;font-weight:700;margin-bottom:8px}
+    .security-text{font-size:.82rem;color:var(--muted)}
+    .sensor-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+    .chip{font-size:.76rem;border:1px solid var(--line);border-radius:999px;padding:6px 9px;color:var(--muted);background:#101217}
+    .chip.active{color:#baf5d3;border-color:#315743;background:rgba(110,231,168,.07)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .card{grid-column:span 6;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;min-width:0}
+    .card.wide{grid-column:span 12}
+    .card h2{font-size:1.05rem;margin:0;letter-spacing:-.01em}
+    .card h3{font-size:.92rem;margin:14px 0 8px}
+    .card-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}
+    .status{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:.8rem}
+    .dot{width:8px;height:8px;border-radius:50%;background:#555d69;box-shadow:0 0 0 4px rgba(255,255,255,.025)}
+    .dot.live{background:var(--ok);box-shadow:0 0 0 4px rgba(110,231,168,.09)}
+    .dot.err{background:var(--bad)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .metric{background:var(--panel2);border:1px solid #232730;border-radius:14px;padding:12px;min-height:76px}
+    .label{display:block;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+    .value{font-variant-numeric:tabular-nums;font-size:1.15rem;letter-spacing:-.025em;overflow-wrap:anywhere}
+    .small{font-size:.88rem}.muted{color:var(--muted)}
+    .support{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .support-item{padding:11px;border-radius:12px;background:var(--panel2);border:1px solid #232730}
+    .support-item strong{display:block;font-size:.88rem;margin-bottom:3px}
+    .yes{color:var(--ok)}.no{color:var(--bad)}.maybe{color:var(--warn)}
+    canvas{display:block;width:100%;height:150px;margin-top:14px;background:#0e1014;border:1px solid #20242b;border-radius:14px}
+    video{display:block;width:100%;max-height:340px;object-fit:cover;margin-top:14px;background:#060708;border-radius:14px;border:1px solid #20242b}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#0e1014;border:1px solid #20242b;border-radius:14px;padding:13px;color:#cbd5e1;font-size:.78rem;max-height:260px;overflow:auto}
+    .note{font-size:.82rem;color:var(--muted);margin-top:12px}
+    .error{color:#ffb0b0;font-size:.82rem;margin-top:10px;min-height:1.2em}
+    .testbox{margin-top:13px;padding:14px;border:1px solid #263041;border-radius:14px;background:#101319}
+    .teststate{font-size:.9rem;font-weight:650;margin-bottom:9px}
+    .progress{height:7px;background:#20252d;border-radius:999px;overflow:hidden;margin:10px 0 12px}
+    .progress>span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s linear}
+    .result-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+    .result{background:var(--panel2);border:1px solid #232730;border-radius:12px;padding:10px;min-height:70px}
+    .result .label{margin-bottom:5px}.result .value{font-size:1rem}
+    .quality-good{color:var(--ok)}.quality-warn{color:var(--warn)}
+    footer{color:var(--muted);font-size:.78rem;margin-top:24px;border-top:1px solid var(--line);padding-top:18px}
+    @media(max-width:820px){
+      header{display:block}.privacy{display:inline-block;margin-top:18px;white-space:normal}.card{grid-column:span 12}.support{grid-template-columns:repeat(2,1fr)}.security{grid-template-columns:1fr}
+    }
+    @media(max-width:600px){.result-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.metrics{grid-template-columns:repeat(2,1fr)}.support{grid-template-columns:1fr}.wrap{width:min(100% - 20px,1180px)}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Prototype 0.2</div>
+      <h1>SensorLab</h1>
+      <p class="intro">Diagnose- und Messprototyp für iPhone/iPad im Browser. Messdaten werden lokal verarbeitet. Berechtigungen werden nur nach einem bewussten Tastendruck angefordert.</p>
+    </div>
+    <div class="privacy">Local-first · kein Konto · keine Speicherung</div>
+  </header>
+
+  <div class="toolbar">
+    <button id="startMotion" class="primary">Bewegung & Ausrichtung freigeben</button>
+    <button id="stopAll" class="danger">Alles stoppen</button>
+  </div>
+
+  <div class="security">
+    <div class="security-box">
+      <div class="security-title">Datenschutz & Netzwerkschutz</div>
+      <div class="security-text">Nach dem Laden der Seite blockiert eine Content Security Policy ausgehende Verbindungen (<code>connect-src 'none'</code>). SensorLab enthält keine Analytics, keine externen Skripte und speichert keine Messdaten.</div>
+    </div>
+    <div class="security-box">
+      <div class="security-title">Aktive Sensoren</div>
+      <div id="activeSensors" class="sensor-chips"></div>
+      <div class="security-text" id="activeSummary">Keine Sensoren aktiv.</div>
+    </div>
+  </div>
+
+  <main class="grid">
+    <section class="card wide">
+      <div class="card-head"><h2>Browser-Fähigkeiten</h2><span class="status"><span class="dot live"></span>Live erkannt</span></div>
+      <div id="support" class="support"></div>
+      <div class="note">„Verfügbar“ heißt nur, dass die API existiert. Ob iOS/Safari konkrete Daten liefert, zeigt erst der jeweilige Test nach deiner Freigabe.</div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Bewegung & Rotation</h2><span class="status"><span id="motionDot" class="dot"></span><span id="motionStatus">inaktiv</span></span></div>
+      <div class="metrics">
+        <div class="metric"><span class="label">Beschl. X</span><span class="value" id="ax">–</span></div>
+        <div class="metric"><span class="label">Beschl. Y</span><span class="value" id="ay">–</span></div>
+        <div class="metric"><span class="label">Beschl. Z</span><span class="value" id="az">–</span></div>
+        <div class="metric"><span class="label">Rotation α</span><span class="value" id="ra">–</span></div>
+        <div class="metric"><span class="label">Rotation β</span><span class="value" id="rb">–</span></div>
+        <div class="metric"><span class="label">Rotation γ</span><span class="value" id="rg">–</span></div>
+        <div class="metric"><span class="label">Eventrate</span><span class="value" id="motionHz">–</span></div>
+        <div class="metric"><span class="label">event.interval</span><span class="value" id="motionInterval">–</span></div>
+        <div class="metric"><span class="label">|a|</span><span class="value" id="amag">–</span></div>
+      </div>
+      <canvas id="motionCanvas" width="900" height="250"></canvas>
+      <div class="note">Beschleunigung ohne Gravitation, soweit Safari sie liefert. <code>event.interval</code> ist auf deinen bisherigen iOS-Tests unbrauchbar; SensorLab misst die reale Rate selbst.</div>
+      <div id="motionError" class="error"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Ausrichtung & Kompass</h2><span class="status"><span id="orientationDot" class="dot"></span><span id="orientationStatus">inaktiv</span></span></div>
+      <div class="metrics">
+        <div class="metric"><span class="label">Alpha</span><span class="value" id="oa">–</span></div>
+        <div class="metric"><span class="label">Beta</span><span class="value" id="ob">–</span></div>
+        <div class="metric"><span class="label">Gamma</span><span class="value" id="og">–</span></div>
+        <div class="metric"><span class="label">Kompass</span><span class="value" id="compass">–</span></div>
+        <div class="metric"><span class="label">Kompassgenauigkeit</span><span class="value" id="compassAcc">–</span></div>
+        <div class="metric"><span class="label">Absolute</span><span class="value" id="absolute">–</span></div>
+        <div class="metric"><span class="label">Δ seit Start</span><span class="value" id="compassDeltaStart">–</span></div>
+        <div class="metric"><span class="label">Δ seit Null</span><span class="value" id="compassDeltaZero">–</span></div>
+        <div class="metric"><span class="label">Qualität absolut</span><span class="value small" id="compassQuality">–</span></div>
+      </div>
+      <div class="actions"><button id="zeroCompass">Kompass relativ nullen</button></div>
+      <div class="note">Die absolute Nordrichtung kann trotz dynamischer Reaktion ungenau sein. Die relative Drehung wird separat angezeigt und ist für Experimente oft nützlicher.</div>
+      <div id="orientationError" class="error"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="card-head"><h2>Motion Quality Test</h2><span class="status"><span id="qualityDot" class="dot"></span><span id="qualityStatus">bereit</span></span></div>
+      <div class="note">iPhone/iPad auf eine feste, ruhige Unterlage legen. Nach dem 3-Sekunden-Countdown 30 Sekunden nicht berühren – auch keine Screenshot-Tasten drücken.</div>
+      <div class="actions"><button id="startQuality">30-Sekunden-Test starten</button></div>
+      <div class="testbox">
+        <div id="qualityState" class="teststate">Noch keine Messung.</div>
+        <div class="progress"><span id="qualityProgress"></span></div>
+        <div class="result-grid">
+          <div class="result"><span class="label">Samples</span><span id="qSamples" class="value">–</span></div>
+          <div class="result"><span class="label">Reale Rate</span><span id="qRate" class="value">–</span></div>
+          <div class="result"><span class="label">Median Δt</span><span id="qMedian" class="value">–</span></div>
+          <div class="result"><span class="label">Jitter σ</span><span id="qJitter" class="value">–</span></div>
+          <div class="result"><span class="label">RMS X</span><span id="qRmsX" class="value">–</span></div>
+          <div class="result"><span class="label">RMS Y</span><span id="qRmsY" class="value">–</span></div>
+          <div class="result"><span class="label">RMS Z</span><span id="qRmsZ" class="value">–</span></div>
+          <div class="result"><span class="label">RMS gesamt</span><span id="qRmsTotal" class="value">–</span></div>
+          <div class="result"><span class="label">Peak |a|</span><span id="qPeak" class="value">–</span></div>
+          <div class="result"><span class="label">Drift</span><span id="qDrift" class="value">–</span></div>
+        </div>
+      </div>
+      <div id="qualityError" class="error"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="card-head"><h2>Impulstest</h2><span class="status"><span id="impulseDot" class="dot"></span><span id="impulseStatus">bereit</span></span></div>
+      <div class="note">Gerät ruhig auf eine feste Oberfläche legen. Nach dem Countdown einmal leicht auf die Oberfläche tippen – nicht auf das Gerät. SensorLab misst Peak und Abklingverhalten über 8 Sekunden.</div>
+      <div class="actions"><button id="startImpulse">Impulstest starten</button></div>
+      <div class="testbox">
+        <div id="impulseState" class="teststate">Noch keine Messung.</div>
+        <div class="progress"><span id="impulseProgress"></span></div>
+        <div class="result-grid">
+          <div class="result"><span class="label">Samples</span><span id="iSamples" class="value">–</span></div>
+          <div class="result"><span class="label">Reale Rate</span><span id="iRate" class="value">–</span></div>
+          <div class="result"><span class="label">Peak</span><span id="iPeak" class="value">–</span></div>
+          <div class="result"><span class="label">Peak nach Start</span><span id="iPeakTime" class="value">–</span></div>
+          <div class="result"><span class="label">Ruhe-RMS</span><span id="iBaseline" class="value">–</span></div>
+          <div class="result"><span class="label">Abklingzeit</span><span id="iDecay" class="value">–</span></div>
+        </div>
+      </div>
+      <div id="impulseError" class="error"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>Mikrofon</h2><span class="status"><span id="micDot" class="dot"></span><span id="micStatus">inaktiv</span></span></div>
+      <div class="metrics">
+        <div class="metric"><span class="label">Pegel</span><span class="value" id="dbfs">–</span></div>
+        <div class="metric"><span class="label">Dominant</span><span class="value" id="domFreq">–</span></div>
+        <div class="metric"><span class="label">Sample Rate</span><span class="value" id="sampleRate">–</span></div>
+        <div class="metric"><span class="label">FFT</span><span class="value" id="fftSize">–</span></div>
+      </div>
+      <canvas id="audioCanvas" width="900" height="250"></canvas>
+      <div class="actions"><button id="startMic">Mikrofon starten</button><button id="stopMic">Stoppen</button></div>
+      <div class="note">Der Pegel ist dBFS (digital relativ), nicht kalibriertes dB(A). Es wird keine Aufnahme erzeugt oder gespeichert.</div>
+      <div id="micError" class="error"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>GPS</h2><span class="status"><span id="gpsDot" class="dot"></span><span id="gpsStatus">inaktiv</span></span></div>
+      <div class="metrics">
+        <div class="metric"><span class="label">Breite</span><span class="value small" id="lat">–</span></div>
+        <div class="metric"><span class="label">Länge</span><span class="value small" id="lon">–</span></div>
+        <div class="metric"><span class="label">Genauigkeit</span><span class="value" id="gpsAcc">–</span></div>
+        <div class="metric"><span class="label">Höhe</span><span class="value" id="alt">–</span></div>
+        <div class="metric"><span class="label">Geschwindigkeit</span><span class="value" id="speed">–</span></div>
+        <div class="metric"><span class="label">Richtung</span><span class="value" id="heading">–</span></div>
+      </div>
+      <div class="actions"><button id="startGps">GPS starten</button><button id="stopGps">Stoppen</button></div>
+      <div class="note">Standort wird nur nach separater Freigabe gelesen. Für Vibrationsmessungen ist GPS nicht erforderlich.</div>
+      <div id="gpsError" class="error"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="card-head"><h2>Kamera & MediaTrack</h2><span class="status"><span id="camDot" class="dot"></span><span id="camStatus">inaktiv</span></span></div>
+      <div class="actions"><button id="startCam">Rückkamera testen</button><button id="stopCam">Stoppen</button></div>
+      <video id="video" playsinline muted></video>
+      <pre id="camInfo">Noch keine Kamera geöffnet.</pre>
+      <div class="note">SensorLab speichert oder überträgt kein Kamerabild. Geräte- und Gruppen-IDs werden aus der Diagnoseanzeige bewusst entfernt.</div>
+      <div id="camError" class="error"></div>
+    </section>
+  </main>
+
+  <footer>
+    SensorLab 0.2 · Diagnose-Prototyp. Messwerte sind nicht kalibriert und nicht für medizinische, sicherheitskritische oder professionelle Messaufgaben gedacht.
+  </footer>
+</div>
+<script nonce="sensorlab-02">
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const num = (v, digits=2) => Number.isFinite(v) ? v.toFixed(digits) : '–';
+  const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const mean = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : NaN;
+  const median = arr => { if(!arr.length) return NaN; const a=[...arr].sort((x,y)=>x-y); const m=Math.floor(a.length/2); return a.length%2?a[m]:(a[m-1]+a[m])/2; };
+  const stddev = arr => { if(arr.length<2) return NaN; const m=mean(arr); return Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/(arr.length-1)); };
+  const rmsCentered = arr => { if(!arr.length) return NaN; const m=mean(arr); return Math.sqrt(arr.reduce((s,v)=>s+(v-m)**2,0)/arr.length); };
+  const angleDiff = (a,b) => { if(!Number.isFinite(a)||!Number.isFinite(b)) return NaN; return ((a-b+540)%360)-180; };
+
+  const setLive = (dotId, statusId, text='live') => { $(dotId).className='dot live'; $(statusId).textContent=text; };
+  const setIdle = (dotId, statusId, text='inaktiv') => { $(dotId).className='dot'; $(statusId).textContent=text; };
+  const setErr = (dotId, statusId, text='Fehler') => { $(dotId).className='dot err'; $(statusId).textContent=text; };
+
+  let motionStarted=false, micStream=null, audioCtx=null, audioRAF=null, gpsWatch=null, camStream=null;
+  let currentHeading=null, compassStart=null, compassZero=null;
+  let qualityCapture=null, impulseCapture=null, testBusy=false;
+  const motionTimes=[];
+  const motionSeries=[];
+  const maxSeries=180;
+  const active={motion:false,orientation:false,mic:false,gps:false,camera:false};
+
+  function renderActiveSensors(){
+    const names={motion:'Bewegung',orientation:'Ausrichtung',mic:'Mikrofon',gps:'Standort',camera:'Kamera'};
+    const root=$('activeSensors'); root.textContent='';
+    Object.entries(names).forEach(([key,label])=>{
+      const span=document.createElement('span'); span.className='chip'+(active[key]?' active':''); span.textContent=(active[key]?'● ':'○ ')+label; root.appendChild(span);
+    });
+    const n=Object.values(active).filter(Boolean).length;
+    $('activeSummary').textContent=n?`${n} Sensor${n===1?'':'en'} aktiv. Nur explizit gestartete Sensoren laufen.`:'Keine Sensoren aktiv.';
+  }
+  function setActive(key,value){active[key]=!!value;renderActiveSensors();}
+
+  function featureSupport(){
+    const features = [
+      ['DeviceMotion', 'DeviceMotionEvent' in window],
+      ['DeviceOrientation', 'DeviceOrientationEvent' in window],
+      ['Geolocation', 'geolocation' in navigator],
+      ['Mikrofon/Kamera', !!navigator.mediaDevices?.getUserMedia],
+      ['AudioContext', !!(window.AudioContext || window.webkitAudioContext)],
+      ['Web Worker', 'Worker' in window],
+      ['IndexedDB', 'indexedDB' in window],
+      ['Web Bluetooth', !!navigator.bluetooth],
+      ['Web Serial', !!navigator.serial],
+      ['WebHID', !!navigator.hid],
+      ['Web NFC', 'NDEFReader' in window],
+      ['Ambient Light', 'AmbientLightSensor' in window],
+      ['Magnetometer API', 'Magnetometer' in window]
+    ];
+    const root=$('support'); root.textContent='';
+    features.forEach(([name,ok])=>{
+      const box=document.createElement('div'); box.className='support-item';
+      const strong=document.createElement('strong'); strong.textContent=name;
+      const span=document.createElement('span'); span.className=ok?'yes':'no'; span.textContent=ok?'verfügbar':'nicht verfügbar';
+      box.append(strong,span); root.appendChild(box);
+    });
+  }
+
+  async function requestMotion(){
+    $('motionError').textContent=''; $('orientationError').textContent='';
+    try{
+      if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+        const m = await DeviceMotionEvent.requestPermission();
+        if(m !== 'granted') throw new Error('Bewegungszugriff wurde nicht freigegeben.');
+      }
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        const o = await DeviceOrientationEvent.requestPermission();
+        if(o !== 'granted') throw new Error('Ausrichtungszugriff wurde nicht freigegeben.');
+      }
+      if(!motionStarted){
+        window.addEventListener('devicemotion', onMotion, {passive:true});
+        window.addEventListener('deviceorientation', onOrientation, {passive:true});
+        motionStarted=true;
+      }
+      setLive('motionDot','motionStatus','wartet auf Daten'); setLive('orientationDot','orientationStatus','wartet auf Daten');
+      setActive('motion',true);setActive('orientation',true);
+      return true;
+    }catch(e){
+      setErr('motionDot','motionStatus'); setErr('orientationDot','orientationStatus');
+      $('motionError').textContent=e.message || String(e); return false;
+    }
+  }
+
+  function readAcceleration(e){
+    const a=e.acceleration || {}; const ag=e.accelerationIncludingGravity || {};
+    return {
+      x:Number.isFinite(a.x)?a.x:(Number.isFinite(ag.x)?ag.x:0),
+      y:Number.isFinite(a.y)?a.y:(Number.isFinite(ag.y)?ag.y:0),
+      z:Number.isFinite(a.z)?a.z:(Number.isFinite(ag.z)?ag.z:0)
+    };
+  }
+
+  function onMotion(e){
+    setLive('motionDot','motionStatus');
+    const {x,y,z}=readAcceleration(e);
+    $('ax').textContent=num(x)+' m/s²'; $('ay').textContent=num(y)+' m/s²'; $('az').textContent=num(z)+' m/s²';
+    const mag=Math.sqrt(x*x+y*y+z*z); $('amag').textContent=num(mag)+' m/s²';
+    const r=e.rotationRate || {}; $('ra').textContent=num(r.alpha)+' °/s'; $('rb').textContent=num(r.beta)+' °/s'; $('rg').textContent=num(r.gamma)+' °/s';
+    $('motionInterval').textContent=Number.isFinite(e.interval)?num(e.interval,1)+' ms':'–';
+    const now=performance.now(); motionTimes.push(now); while(motionTimes.length && now-motionTimes[0]>2000) motionTimes.shift();
+    if(motionTimes.length>1){ const hz=(motionTimes.length-1)/((motionTimes.at(-1)-motionTimes[0])/1000); $('motionHz').textContent=num(hz,1)+' Hz'; }
+    motionSeries.push([x,y,z]); if(motionSeries.length>maxSeries) motionSeries.shift(); drawMotion();
+    const s={t:now,x,y,z,mag}; if(qualityCapture) qualityCapture.push(s); if(impulseCapture) impulseCapture.push(s);
+  }
+
+  function compassQuality(acc){
+    if(!Number.isFinite(acc)) return 'unbekannt';
+    if(acc<=10) return 'gut'; if(acc<=25) return 'brauchbar'; return 'schwach';
+  }
+  function onOrientation(e){
+    setLive('orientationDot','orientationStatus');
+    $('oa').textContent=num(e.alpha)+'°'; $('ob').textContent=num(e.beta)+'°'; $('og').textContent=num(e.gamma)+'°'; $('absolute').textContent=String(!!e.absolute);
+    const h=Number.isFinite(e.webkitCompassHeading)?e.webkitCompassHeading:null; const acc=Number.isFinite(e.webkitCompassAccuracy)?e.webkitCompassAccuracy:null;
+    currentHeading=h;
+    if(Number.isFinite(h) && !Number.isFinite(compassStart)) compassStart=h;
+    $('compass').textContent=Number.isFinite(h)?num(h,1)+'°':'–'; $('compassAcc').textContent=Number.isFinite(acc)?'±'+num(acc,1)+'°':'–';
+    $('compassDeltaStart').textContent=Number.isFinite(h)&&Number.isFinite(compassStart)?(angleDiff(h,compassStart)>=0?'+':'')+num(angleDiff(h,compassStart),1)+'°':'–';
+    $('compassDeltaZero').textContent=Number.isFinite(h)&&Number.isFinite(compassZero)?(angleDiff(h,compassZero)>=0?'+':'')+num(angleDiff(h,compassZero),1)+'°':'–';
+    const q=compassQuality(acc); $('compassQuality').textContent=q; $('compassQuality').className='value small '+(q==='gut'?'quality-good':(q==='schwach'?'quality-warn':''));
+  }
+
+  function drawMotion(){
+    const c=$('motionCanvas'), ctx=c.getContext('2d'), w=c.width,h=c.height;
+    ctx.clearRect(0,0,w,h); ctx.strokeStyle='#252a33'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,h/2); ctx.lineTo(w,h/2); ctx.stroke();
+    if(motionSeries.length<2) return;
+    let max=1; for(const p of motionSeries) for(const v of p) max=Math.max(max,Math.abs(v));
+    const cols=['#8fb7ff','#6ee7a8','#f7ca65'];
+    for(let axis=0;axis<3;axis++){
+      ctx.strokeStyle=cols[axis];ctx.lineWidth=2;ctx.beginPath();
+      motionSeries.forEach((p,i)=>{const x=i/(maxSeries-1)*w; const y=h/2-(p[axis]/max)*(h*.42); i?ctx.lineTo(x,y):ctx.moveTo(x,y)}); ctx.stroke();
+    }
+  }
+
+  function resetQualityFields(){['qSamples','qRate','qMedian','qJitter','qRmsX','qRmsY','qRmsZ','qRmsTotal','qPeak','qDrift'].forEach(id=>$(id).textContent='–');}
+  async function countdown(stateId,dotId,statusId,seconds=3){
+    setLive(dotId,statusId,'Countdown');
+    for(let i=seconds;i>0;i--){$(stateId).textContent=`Start in ${i} … Gerät nicht mehr berühren.`; await sleep(1000);}
+  }
+  async function startQualityTest(){
+    if(testBusy) return; testBusy=true; $('qualityError').textContent=''; resetQualityFields(); $('qualityProgress').style.width='0%';
+    try{
+      if(!motionStarted && !(await requestMotion())) throw new Error('Bewegungssensor konnte nicht gestartet werden.');
+      await countdown('qualityState','qualityDot','qualityStatus',3);
+      qualityCapture=[]; const duration=30000; const start=performance.now(); $('qualityState').textContent='Messung läuft … bitte 30 Sekunden nicht berühren.'; setLive('qualityDot','qualityStatus','misst');
+      const timer=setInterval(()=>{$('qualityProgress').style.width=clamp((performance.now()-start)/duration*100,0,100)+'%';},200);
+      await sleep(duration); clearInterval(timer); $('qualityProgress').style.width='100%'; const samples=qualityCapture; qualityCapture=null;
+      if(samples.length<20) throw new Error('Zu wenige Bewegungsdaten erhalten.');
+      const dts=[]; for(let i=1;i<samples.length;i++) dts.push(samples[i].t-samples[i-1].t);
+      const xs=samples.map(s=>s.x), ys=samples.map(s=>s.y), zs=samples.map(s=>s.z);
+      const durationS=(samples.at(-1).t-samples[0].t)/1000; const rate=(samples.length-1)/durationS;
+      const rx=rmsCentered(xs), ry=rmsCentered(ys), rz=rmsCentered(zs), rtot=Math.sqrt(rx*rx+ry*ry+rz*rz);
+      const peak=Math.max(...samples.map(s=>s.mag)); const n=Math.max(1,Math.floor(samples.length*.2));
+      const first=samples.slice(0,n), last=samples.slice(-n); const drift=Math.sqrt((mean(last.map(s=>s.x))-mean(first.map(s=>s.x)))**2+(mean(last.map(s=>s.y))-mean(first.map(s=>s.y)))**2+(mean(last.map(s=>s.z))-mean(first.map(s=>s.z)))**2);
+      $('qSamples').textContent=String(samples.length); $('qRate').textContent=num(rate,2)+' Hz'; $('qMedian').textContent=num(median(dts),2)+' ms'; $('qJitter').textContent=num(stddev(dts),3)+' ms';
+      $('qRmsX').textContent=num(rx,4)+' m/s²'; $('qRmsY').textContent=num(ry,4)+' m/s²'; $('qRmsZ').textContent=num(rz,4)+' m/s²'; $('qRmsTotal').textContent=num(rtot,4)+' m/s²'; $('qPeak').textContent=num(peak,3)+' m/s²'; $('qDrift').textContent=num(drift,4)+' m/s²';
+      $('qualityState').textContent='Messung abgeschlossen. Für Vergleiche denselben Messplatz und dasselbe Gerät verwenden.'; setLive('qualityDot','qualityStatus','fertig');
+    }catch(e){qualityCapture=null;setErr('qualityDot','qualityStatus');$('qualityError').textContent=e.message||String(e);$('qualityState').textContent='Test abgebrochen.';} finally{testBusy=false;}
+  }
+
+  function resetImpulseFields(){['iSamples','iRate','iPeak','iPeakTime','iBaseline','iDecay'].forEach(id=>$(id).textContent='–');}
+  async function startImpulseTest(){
+    if(testBusy) return; testBusy=true; $('impulseError').textContent=''; resetImpulseFields(); $('impulseProgress').style.width='0%';
+    try{
+      if(!motionStarted && !(await requestMotion())) throw new Error('Bewegungssensor konnte nicht gestartet werden.');
+      await countdown('impulseState','impulseDot','impulseStatus',3);
+      impulseCapture=[]; const duration=8000; const start=performance.now(); $('impulseState').textContent='Jetzt einmal leicht auf die Unterlage tippen – Gerät selbst nicht berühren.'; setLive('impulseDot','impulseStatus','misst');
+      const timer=setInterval(()=>{$('impulseProgress').style.width=clamp((performance.now()-start)/duration*100,0,100)+'%';},100);
+      await sleep(duration); clearInterval(timer); $('impulseProgress').style.width='100%'; const samples=impulseCapture; impulseCapture=null;
+      if(samples.length<20) throw new Error('Zu wenige Bewegungsdaten erhalten.');
+      const durationS=(samples.at(-1).t-samples[0].t)/1000; const rate=(samples.length-1)/durationS;
+      const tail=samples.slice(Math.floor(samples.length*.7)); const bx=mean(tail.map(s=>s.x)),by=mean(tail.map(s=>s.y)),bz=mean(tail.map(s=>s.z));
+      const signal=samples.map(s=>Math.sqrt((s.x-bx)**2+(s.y-by)**2+(s.z-bz)**2)); const tailSig=signal.slice(Math.floor(signal.length*.7)); const baseline=Math.sqrt(tailSig.reduce((sum,v)=>sum+v*v,0)/Math.max(1,tailSig.length));
+      let peak=0,pi=0; signal.forEach((v,i)=>{if(v>peak){peak=v;pi=i;}});
+      const threshold=Math.max(baseline*3,peak*.10); const window=Math.max(2,Math.round(rate*.10)); const smoothed=[];
+      for(let i=0;i<signal.length;i++){const a=Math.max(0,i-window+1);let sum=0;for(let j=a;j<=i;j++)sum+=signal[j]*signal[j];smoothed[i]=Math.sqrt(sum/(i-a+1));}
+      let lastAbove=pi; for(let i=pi;i<smoothed.length;i++) if(smoothed[i]>threshold) lastAbove=i;
+      const peakTime=(samples[pi].t-samples[0].t)/1000; const decay=(samples[lastAbove].t-samples[pi].t)/1000;
+      $('iSamples').textContent=String(samples.length); $('iRate').textContent=num(rate,2)+' Hz'; $('iPeak').textContent=num(peak,3)+' m/s²'; $('iPeakTime').textContent=num(peakTime,2)+' s'; $('iBaseline').textContent=num(baseline,4)+' m/s²'; $('iDecay').textContent=(lastAbove===samples.length-1?'> ':'')+num(decay,2)+' s';
+      $('impulseState').textContent='Messung abgeschlossen. Für A/B-Vergleiche möglichst gleich stark und an derselben Stelle anstoßen.'; setLive('impulseDot','impulseStatus','fertig');
+    }catch(e){impulseCapture=null;setErr('impulseDot','impulseStatus');$('impulseError').textContent=e.message||String(e);$('impulseState').textContent='Test abgebrochen.';} finally{testBusy=false;}
+  }
+
+  async function startMic(){
+    $('micError').textContent='';
+    try{
+      stopMic();
+      micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false}); setActive('mic',true);
+      const AC=window.AudioContext||window.webkitAudioContext; audioCtx=new AC(); await audioCtx.resume();
+      const source=audioCtx.createMediaStreamSource(micStream), analyser=audioCtx.createAnalyser(); analyser.fftSize=4096; analyser.smoothingTimeConstant=.55; source.connect(analyser);
+      $('sampleRate').textContent=audioCtx.sampleRate+' Hz'; $('fftSize').textContent=analyser.fftSize;
+      const time=new Float32Array(analyser.fftSize), freq=new Float32Array(analyser.frequencyBinCount); const c=$('audioCanvas'), ctx=c.getContext('2d');
+      const tick=()=>{
+        analyser.getFloatTimeDomainData(time); let sum=0; for(const v of time) sum+=v*v; const rms=Math.sqrt(sum/time.length); const db=rms>0?20*Math.log10(rms):-Infinity; $('dbfs').textContent=Number.isFinite(db)?db.toFixed(1)+' dBFS':'−∞';
+        analyser.getFloatFrequencyData(freq); let best=-Infinity,idx=0; for(let i=1;i<freq.length;i++){if(freq[i]>best){best=freq[i];idx=i}} const hz=idx*audioCtx.sampleRate/analyser.fftSize; $('domFreq').textContent=Number.isFinite(hz)?hz.toFixed(1)+' Hz':'–';
+        ctx.clearRect(0,0,c.width,c.height); ctx.strokeStyle='#252a33';ctx.beginPath();ctx.moveTo(0,c.height-20);ctx.lineTo(c.width,c.height-20);ctx.stroke(); ctx.strokeStyle='#8fb7ff';ctx.lineWidth=2;ctx.beginPath();
+        const maxHz=Math.min(5000,audioCtx.sampleRate/2); const bins=Math.floor(maxHz*analyser.fftSize/audioCtx.sampleRate); for(let i=0;i<bins;i++){const x=i/(bins-1)*c.width; const normalized=Math.max(0,Math.min(1,(freq[i]+100)/90)); const y=c.height-20-normalized*(c.height-35); i?ctx.lineTo(x,y):ctx.moveTo(x,y)} ctx.stroke(); audioRAF=requestAnimationFrame(tick);
+      };
+      setLive('micDot','micStatus'); tick();
+    }catch(e){setActive('mic',false);setErr('micDot','micStatus');$('micError').textContent=e.message||String(e)}
+  }
+  function stopMic(){if(audioRAF)cancelAnimationFrame(audioRAF);audioRAF=null;if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;if(audioCtx)audioCtx.close().catch(()=>{});audioCtx=null;setActive('mic',false);setIdle('micDot','micStatus')}
+
+  function startGps(){
+    $('gpsError').textContent=''; if(!navigator.geolocation){setErr('gpsDot','gpsStatus');$('gpsError').textContent='Geolocation API nicht verfügbar.';return}
+    if(gpsWatch!==null) navigator.geolocation.clearWatch(gpsWatch);
+    gpsWatch=navigator.geolocation.watchPosition(pos=>{setActive('gps',true);setLive('gpsDot','gpsStatus');const c=pos.coords;$('lat').textContent=num(c.latitude,6);$('lon').textContent=num(c.longitude,6);$('gpsAcc').textContent=num(c.accuracy,1)+' m';$('alt').textContent=Number.isFinite(c.altitude)?num(c.altitude,1)+' m':'–';$('speed').textContent=Number.isFinite(c.speed)?num(c.speed*3.6,1)+' km/h':'–';$('heading').textContent=Number.isFinite(c.heading)?num(c.heading,1)+'°':'–';},err=>{setActive('gps',false);setErr('gpsDot','gpsStatus');$('gpsError').textContent=err.message},{enableHighAccuracy:true,maximumAge:0,timeout:15000});
+  }
+  function stopGps(){if(gpsWatch!==null)navigator.geolocation.clearWatch(gpsWatch);gpsWatch=null;setActive('gps',false);setIdle('gpsDot','gpsStatus')}
+
+  function sanitizeMediaObject(value){
+    if(Array.isArray(value)) return value.map(sanitizeMediaObject);
+    if(value && typeof value==='object'){
+      const out={}; for(const [k,v] of Object.entries(value)){ if(k==='deviceId'||k==='groupId') continue; out[k]=sanitizeMediaObject(v); } return out;
+    }
+    return value;
+  }
+  async function startCam(){
+    $('camError').textContent='';
+    try{
+      stopCam(); camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}); setActive('camera',true);
+      $('video').srcObject=camStream; await $('video').play(); const track=camStream.getVideoTracks()[0];
+      const payload={label:track.label,settings:sanitizeMediaObject(track.getSettings?.()||{}),capabilities:sanitizeMediaObject(track.getCapabilities?.()||{}),constraints:sanitizeMediaObject(track.getConstraints?.()||{})};
+      $('camInfo').textContent=JSON.stringify(payload,null,2);setLive('camDot','camStatus');
+    }catch(e){setActive('camera',false);setErr('camDot','camStatus');$('camError').textContent=e.message||String(e)}
+  }
+  function stopCam(){if(camStream)camStream.getTracks().forEach(t=>t.stop());camStream=null;$('video').srcObject=null;$('camInfo').textContent='Noch keine Kamera geöffnet.';setActive('camera',false);setIdle('camDot','camStatus')}
+
+  function stopMotion(){
+    if(motionStarted){window.removeEventListener('devicemotion',onMotion);window.removeEventListener('deviceorientation',onOrientation);motionStarted=false;}
+    qualityCapture=null;impulseCapture=null;setActive('motion',false);setActive('orientation',false);setIdle('motionDot','motionStatus');setIdle('orientationDot','orientationStatus');
+  }
+  function stopAll(){stopMic();stopGps();stopCam();stopMotion();setIdle('qualityDot','qualityStatus','bereit');setIdle('impulseDot','impulseStatus','bereit');testBusy=false;}
+
+  $('startMotion').addEventListener('click',requestMotion); $('startMic').addEventListener('click',startMic); $('stopMic').addEventListener('click',stopMic);
+  $('startGps').addEventListener('click',startGps); $('stopGps').addEventListener('click',stopGps); $('startCam').addEventListener('click',startCam); $('stopCam').addEventListener('click',stopCam); $('stopAll').addEventListener('click',stopAll);
+  $('startQuality').addEventListener('click',startQualityTest); $('startImpulse').addEventListener('click',startImpulseTest);
+  $('zeroCompass').addEventListener('click',()=>{if(Number.isFinite(currentHeading)){compassZero=currentHeading;$('compassDeltaZero').textContent='+0.0°';}});
+  window.addEventListener('pagehide',stopAll); featureSupport(); renderActiveSensors();
+})();
+</script>
+</body>
+</html>
