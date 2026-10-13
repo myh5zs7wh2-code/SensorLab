@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-level-02'; style-src 'nonce-level-02'; img-src 'self' data:; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Winkel & Ausrichtung – PocketMetry</title>
+  <style nonce="level-02">
+    :root{color-scheme:dark;--bg:#0b0d12;--panel:#141821;--panel2:#191e28;--line:#293141;--text:#f6f8fb;--muted:#a5adbb;--accent:#8fb7ff;--ok:#75e6ad;--warn:#f7ca65;--bad:#ff8787;--radius:22px}
+    *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-height:100vh;background:radial-gradient(circle at 80% -10%,#1c2942 0,transparent 36%),var(--bg);color:var(--text);font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+    button,a{font:inherit}.wrap{width:min(900px,calc(100% - 28px));margin:auto;padding:max(18px,env(safe-area-inset-top)) 0 max(44px,env(safe-area-inset-bottom))}
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:12px}.back{color:var(--muted);text-decoration:none;padding:8px 0}.back:focus-visible,.back:hover{color:var(--text)}.version{font-size:.78rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 8px}
+    header{padding:38px 0 24px}.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.13em;font-weight:750;color:var(--ok)}h1{font-size:clamp(2.25rem,9vw,4.7rem);line-height:.96;letter-spacing:-.06em;margin:11px 0 16px}header p{color:var(--muted);max-width:650px;margin:0}
+    .permission,.panel{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel)}.permission{padding:18px;display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:14px}.permission h2{font-size:1rem;margin:0 0 5px}.permission p{color:var(--muted);font-size:.83rem;margin:0;max-width:560px}
+    button{border:1px solid var(--line);border-radius:14px;padding:12px 15px;background:var(--panel2);color:var(--text);font-weight:700;cursor:pointer;min-height:46px}button.primary{background:#eef4ff;color:#101319;border-color:#eef4ff}button:disabled{opacity:.5;cursor:not-allowed}
+    .panel{padding:18px}.statusline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.status{display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-size:.84rem}.dot{width:9px;height:9px;border-radius:50%;background:#59616e}.dot.live{background:var(--ok);box-shadow:0 0 0 4px rgba(117,230,173,.1)}.dot.warn{background:var(--warn)}.dot.err{background:var(--bad)}
+    .instrument{display:grid;grid-template-columns:minmax(260px,1.15fr) minmax(240px,.85fr);gap:14px}.level{position:relative;aspect-ratio:1;background:#0e1117;border:1px solid #222a37;border-radius:20px;overflow:hidden}.cross-x,.cross-y{position:absolute;background:#30394a}.cross-x{height:1px;left:10%;right:10%;top:50%}.cross-y{width:1px;top:10%;bottom:10%;left:50%}.target{position:absolute;width:76px;height:76px;border:2px solid #53627a;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}.target:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#71809a;left:50%;top:50%;transform:translate(-50%,-50%)}.bubble{position:absolute;width:48px;height:48px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 34% 28%,#e1fff0 0,#75e6ad 30%,#279b63 100%);box-shadow:0 8px 24px rgba(44,189,112,.28);transition:background .18s ease}.bubble.off{background:#566071;box-shadow:none}
+    .readouts{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{background:var(--panel2);border:1px solid #242b37;border-radius:15px;padding:12px;min-height:82px}.metric.wide{grid-column:span 2}.label{display:block;color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.value{font-size:1.42rem;font-weight:720;font-variant-numeric:tabular-nums;letter-spacing:-.035em}.value.small{font-size:1rem;letter-spacing:-.01em}.sub{color:var(--muted);font-size:.75rem;margin-top:3px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hint{font-size:.82rem;color:var(--muted);margin-top:12px}.message{min-height:1.4em;color:var(--bad);font-size:.82rem;margin-top:9px}
+    .quality{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.quality-card{background:var(--panel2);border:1px solid #242b37;border-radius:15px;padding:12px}.quality-card strong{display:block;font-size:.88rem;margin-bottom:4px}.quality-card span{font-size:.78rem;color:var(--muted)}.quality-card.good strong{color:var(--ok)}.quality-card.medium strong{color:var(--warn)}
+    .guide{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:18px;background:rgba(143,183,255,.045)}.guide h2{font-size:.95rem;margin:0 0 7px}.guide p{color:var(--muted);font-size:.82rem;margin:0}
+    @media(max-width:680px){.permission{display:block}.permission button{width:100%;margin-top:14px}.instrument{grid-template-columns:1fr}.level{aspect-ratio:1;max-height:54vh}.quality{grid-template-columns:1fr}.statusline{align-items:start}.wrap{width:calc(100% - 20px)}}
+    @media(max-width:360px){.readouts{grid-template-columns:1fr}.metric.wide{grid-column:span 1}.actions button{width:100%}}
+    @media(prefers-reduced-motion:reduce){.bubble{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="Navigation"><a class="back" href="index.html">← PocketMetry</a><span class="version">Winkel · 0.2</span></nav>
+    <header><div class="eyebrow">Winkel & Ausrichtung</div><h1>Ist es wirklich gerade?</h1><p>Lege das iPhone mit dem Display nach oben auf die Fläche. Die Zielmarke zeigt „waagerecht“; mit relativer Nullung kannst du jede Ausgangslage als Bezug verwenden.</p></header>
+
+    <section class="permission" aria-labelledby="permission-title">
+      <div><h2 id="permission-title">Sensor erst bewusst starten</h2><p>Erst der Tastendruck fordert auf iPhone/iPad die Ausrichtungsfreigabe an. Messwerte bleiben im Browser und werden weder gespeichert noch übertragen.</p></div>
+      <button id="start" class="primary">Ausrichtung freigeben</button>
+    </section>
+
+    <main class="panel">
+      <div class="statusline"><strong>Live-Neigung</strong><span class="status"><span id="dot" class="dot"></span><span id="status">inaktiv</span></span></div>
+      <div class="instrument">
+        <div id="level" class="level" role="img" aria-label="Zweiachsige Libelle">
+          <span class="cross-x"></span><span class="cross-y"></span><span class="target"></span><span id="bubble" class="bubble off"></span>
+        </div>
+        <div>
+          <div class="readouts">
+            <div class="metric"><span class="label">Links / rechts</span><span id="xValue" class="value">–</span><div class="sub">relative Grad</div></div>
+            <div class="metric"><span class="label">Vorne / hinten</span><span id="yValue" class="value">–</span><div class="sub">relative Grad</div></div>
+            <div class="metric wide"><span class="label">Ziel waagerecht</span><span id="targetValue" class="value small">Sensor starten</span></div>
+            <div class="metric wide"><span class="label">Stabilität</span><span id="stabilityValue" class="value small">–</span><div id="stabilitySub" class="sub">Bewertung über die letzten 1,5 Sekunden</div></div>
+          </div>
+          <div class="actions"><button id="zero" disabled>Relativ nullen</button><button id="resetZero" disabled>Nullung aufheben</button><button id="stop" disabled>Stoppen</button></div>
+          <div class="hint">Tipp: Für die absolute Waage Nullung aufgehoben lassen. „Relativ nullen“ eignet sich zum Vergleichen einer gewünschten Referenzlage.</div>
+          <div id="message" class="message" role="alert"></div>
+        </div>
+      </div>
+
+      <div class="quality" aria-label="Qualität und Genauigkeit">
+        <div id="signalCard" class="quality-card"><strong id="signalTitle">Noch keine Daten</strong><span id="signalText">Eventrate und Gleichmäßigkeit werden nach dem Start bewertet.</span></div>
+        <div id="precisionCard" class="quality-card"><strong id="precisionTitle">Genauigkeit unbekannt</strong><span id="precisionText">Browser-Sensoren sind nicht kalibriert; kleine Abweichungen sind normal.</span></div>
+        <div class="quality-card"><strong>Messgrenze</strong><span>Geeignet für Orientierung und Vergleiche, nicht für Bauabnahme oder sicherheitskritische Messungen.</span></div>
+      </div>
+    </main>
+
+    <aside class="guide"><h2>So wird die Messung besser</h2><p>Hülle und Kamerabuckel können das Gerät verkanten. Nutze eine feste Unterlage, warte auf „stabil“ und vergleiche bei Bedarf nach einer Drehung um 180°. Weichen beide Richtungen stark voneinander ab, ist die absolute Aussage unsicher.</p></aside>
+  </div>
+
+  <script nonce="level-02">
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    let active = false;
+    let zeroX = 0;
+    let zeroY = 0;
+    let hasZero = false;
+    let samples = [];
+    let eventTimes = [];
+    let lastRaw = null;
+
+    function screenAngle() {
+      if (screen.orientation && Number.isFinite(screen.orientation.angle)) return screen.orientation.angle;
+      return Number.isFinite(window.orientation) ? window.orientation : 0;
+    }
+
+    function screenAxes(beta, gamma) {
+      const a = screenAngle() * Math.PI / 180;
+      return {
+        x: gamma * Math.cos(a) + beta * Math.sin(a),
+        y: beta * Math.cos(a) - gamma * Math.sin(a)
+      };
+    }
+
+    function setStatus(kind, text) {
+      $('dot').className = 'dot' + (kind ? ' ' + kind : '');
+      $('status').textContent = text;
+    }
+
+    function qualityClass(id, name) {
+      $(id).className = 'quality-card' + (name ? ' ' + name : '');
+    }
+
+    function renderQuality(now) {
+      const recentTimes = eventTimes.filter(t => now - t <= 3000);
+      eventTimes = recentTimes;
+      if (recentTimes.length < 8) return;
+      const duration = (recentTimes[recentTimes.length - 1] - recentTimes[0]) / 1000;
+      const rate = duration > 0 ? (recentTimes.length - 1) / duration : 0;
+      const gaps = recentTimes.slice(1).map((t, i) => t - recentTimes[i]);
+      const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+      const jitter = Math.sqrt(gaps.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / gaps.length);
+      if (rate >= 25 && jitter < 18) {
+        qualityClass('signalCard', 'good');
+        $('signalTitle').textContent = 'Signal gut';
+      } else if (rate >= 10) {
+        qualityClass('signalCard', 'medium');
+        $('signalTitle').textContent = 'Signal eingeschränkt';
+      } else {
+        qualityClass('signalCard', 'medium');
+        $('signalTitle').textContent = 'Signal langsam';
+      }
+      $('signalText').textContent = rate.toFixed(0) + ' Werte/s · Zeitjitter ' + jitter.toFixed(0) + ' ms. Entscheidend ist zusätzlich eine ruhige Auflage.';
+    }
+
+    function renderStability(now) {
+      samples = samples.filter(s => now - s.t <= 1500);
+      if (samples.length < 8) {
+        $('stabilityValue').textContent = 'wird ermittelt …';
+        return;
+      }
+      const mx = samples.reduce((s, v) => s + v.x, 0) / samples.length;
+      const my = samples.reduce((s, v) => s + v.y, 0) / samples.length;
+      const spread = Math.sqrt(samples.reduce((s, v) => s + Math.pow(v.x - mx, 2) + Math.pow(v.y - my, 2), 0) / samples.length);
+      let label;
+      if (spread < 0.08) label = 'sehr stabil';
+      else if (spread < 0.25) label = 'stabil';
+      else if (spread < 0.7) label = 'leicht unruhig';
+      else label = 'in Bewegung';
+      $('stabilityValue').textContent = label;
+      $('stabilitySub').textContent = 'Streuung ' + spread.toFixed(2) + '° über ' + (Math.min(1500, now - samples[0].t) / 1000).toFixed(1) + ' s';
+      qualityClass('precisionCard', spread < 0.25 ? 'good' : 'medium');
+      $('precisionTitle').textContent = spread < 0.25 ? 'Wiederholbar ruhig' : 'Noch nicht ruhig';
+      $('precisionText').textContent = spread < 0.25 ? 'Die Anzeige ist momentan stabil. Absolute Genauigkeit bleibt unkalibriert.' : 'Gerät oder Unterlage bewegen sich; für eine Ablesung noch warten.';
+    }
+
+    function onOrientation(event) {
+      if (!active || !Number.isFinite(event.beta) || !Number.isFinite(event.gamma)) return;
+      const raw = screenAxes(event.beta, event.gamma);
+      lastRaw = raw;
+      const x = raw.x - (hasZero ? zeroX : 0);
+      const y = raw.y - (hasZero ? zeroY : 0);
+      const now = performance.now();
+      samples.push({x, y, t: now});
+      eventTimes.push(now);
+      $('xValue').textContent = (x >= 0 ? '+' : '') + x.toFixed(1) + '°';
+      $('yValue').textContent = (y >= 0 ? '+' : '') + y.toFixed(1) + '°';
+      const total = Math.hypot(x, y);
+      $('targetValue').textContent = total <= 0.5 ? 'waagerecht' : total <= 1.5 ? 'nahezu waagerecht' : total.toFixed(1) + '° vom Ziel';
+      const px = clamp(x / 10, -1, 1) * 38;
+      const py = clamp(y / 10, -1, 1) * 38;
+      $('bubble').style.left = (50 + px) + '%';
+      $('bubble').style.top = (50 + py) + '%';
+      $('bubble').className = 'bubble';
+      $('bubble').style.background = total <= 0.5 ? 'radial-gradient(circle at 34% 28%,#e1fff0 0,#75e6ad 30%,#279b63 100%)' : total <= 1.5 ? 'radial-gradient(circle at 34% 28%,#fff4cf 0,#f7ca65 32%,#b87920 100%)' : 'radial-gradient(circle at 34% 28%,#dce9ff 0,#8fb7ff 32%,#3b67b1 100%)';
+      renderStability(now);
+      renderQuality(now);
+      setStatus('live', 'live');
+    }
+
+    async function start() {
+      $('message').textContent = '';
+      try {
+        if (!('DeviceOrientationEvent' in window)) throw new Error('Dieser Browser meldet keine Ausrichtungsschnittstelle.');
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          const permission = await DeviceOrientationEvent.requestPermission();
+          if (permission !== 'granted') throw new Error('Die Sensorfreigabe wurde nicht erteilt.');
+        }
+        if (!window.isSecureContext) throw new Error('Sensorzugriff benötigt eine sichere HTTPS-Verbindung.');
+        active = true;
+        samples = [];
+        eventTimes = [];
+        window.addEventListener('deviceorientation', onOrientation, true);
+        $('start').disabled = true;
+        $('zero').disabled = false;
+        $('resetZero').disabled = false;
+        $('stop').disabled = false;
+        setStatus('warn', 'warte auf Daten');
+      } catch (error) {
+        $('message').textContent = error.message || String(error);
+        setStatus('err', 'nicht verfügbar');
+      }
+    }
+
+    function stop() {
+      active = false;
+      window.removeEventListener('deviceorientation', onOrientation, true);
+      $('start').disabled = false;
+      $('zero').disabled = true;
+      $('resetZero').disabled = true;
+      $('stop').disabled = true;
+      $('bubble').className = 'bubble off';
+      $('bubble').style.left = '50%';
+      $('bubble').style.top = '50%';
+      $('bubble').style.background = '';
+      setStatus('', 'inaktiv');
+    }
+
+    $('start').addEventListener('click', start);
+    $('stop').addEventListener('click', stop);
+    $('zero').addEventListener('click', () => {
+      if (!lastRaw) {
+        $('message').textContent = 'Noch keine Sensordaten zum Nullen vorhanden.';
+        return;
+      }
+      zeroX = lastRaw.x;
+      zeroY = lastRaw.y;
+      hasZero = true;
+      samples = [];
+      $('message').textContent = '';
+      $('targetValue').textContent = 'relative Referenz gesetzt';
+    });
+    $('resetZero').addEventListener('click', () => {
+      hasZero = false;
+      zeroX = 0;
+      zeroY = 0;
+      samples = [];
+      $('message').textContent = '';
+    });
+    window.addEventListener('pagehide', stop);
+  })();
+  </script>
+</body>
+</html>

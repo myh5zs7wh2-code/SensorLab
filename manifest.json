@@ -1,0 +1,11 @@
+{
+  "name": "PocketMetry – Vibration & Vergleich",
+  "short_name": "PocketMetry",
+  "description": "Lokaler A/B-Vibrationsvergleich für iPhone und iPad.",
+  "lang": "de",
+  "start_url": "./vibelab.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090b0e",
+  "theme_color": "#090b0e"
+}
